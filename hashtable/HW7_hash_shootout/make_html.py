@@ -1,3 +1,5 @@
 import sys
-html_template = file('charts-template.html', 'r').read()
-file('charts.html', 'w').write(html_template.replace('__CHART_DATA_GOES_HERE__', sys.stdin.read()))
+f = open('charts-template.html', 'r')
+html_template = f.read()
+f_2 = open('charts.html', 'w')
+f_2.write(html_template.replace('__CHART_DATA_GOES_HERE__', sys.stdin.read()))

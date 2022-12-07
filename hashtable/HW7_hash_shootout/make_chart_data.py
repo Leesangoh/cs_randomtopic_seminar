@@ -67,4 +67,4 @@ for i, (benchtype, programs) in enumerate(by_benchtype.items()):
         for k, (nkeys, value) in enumerate(data):
             chart_data[benchtype][-1]['data'].append([nkeys, value])
 
-print 'chart_data = ' + json.dumps(chart_data)
+print ('chart_data = ' + json.dumps(chart_data))

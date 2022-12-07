@@ -7,11 +7,11 @@
 #include <algorithm>
 using namespace std;
 
-int hash( const char * key);
-int hash( const string & key );
-int hash( int key );
+int hash2(const char *key);
+int hash2(const string &key);
+int hash2(int key);
 
-int nextPrime( int n );
+int nextPrime(int n);
 
 // My Hash table class
 //
@@ -22,91 +22,90 @@ int nextPrime( int n );
 // bool remove( x )       --> Remove x
 // bool contains( x )     --> Return true if x is present
 // void makeEmpty( )      --> Remove all items
-// int hash( string str ) --> Global method to hash strings
+// int hash2( string str ) --> Global method to hash strings
 
 template <typename HashedObj>
 class HashTable
 {
-  public:
-    explicit HashTable( int size = 101 )
-      : currentSize( 0 )
-      { theLists.resize( 101 ); }
-
-    bool contains( const HashedObj & x ) const
+public:
+    explicit HashTable(int size = 101)
+        : currentSize(0)
     {
-        const list<HashedObj> & whichList = theLists[ myhash( x ) ];
-        return find( whichList.begin( ), whichList.end( ), x ) != whichList.end( );
+        theLists.resize(101);
     }
 
-    void makeEmpty( )
+    bool contains(const HashedObj &x) const
     {
-        for( int i = 0; i < theLists.size( ); i++ )
-            theLists[ i ].clear( );
+        const list<HashedObj> &whichList = theLists[myhash(x)];
+        return find(whichList.begin(), whichList.end(), x) != whichList.end();
     }
 
-    bool insert( const HashedObj & x )
+    void makeEmpty()
     {
-        list<HashedObj> & whichList = theLists[ myhash( x ) ];
-        if( find( whichList.begin( ), whichList.end( ), x ) != whichList.end( ) )
+        for (int i = 0; i < theLists.size(); i++)
+            theLists[i].clear();
+    }
+
+    bool insert(const HashedObj &x)
+    {
+        list<HashedObj> &whichList = theLists[myhash(x)];
+        if (find(whichList.begin(), whichList.end(), x) != whichList.end())
             return false;
-        whichList.push_back( x );
+        whichList.push_back(x);
 
-            // Rehash; see Section 5.5
-        if( ++currentSize > theLists.size( ) )
-            rehash( );
+        // Rehash; see Section 5.5
+        if (++currentSize > theLists.size())
+            rehash();
 
         return true;
     }
 
-    bool remove( const HashedObj & x )
+    bool remove(const HashedObj &x)
     {
-        list<HashedObj> & whichList = theLists[ myhash( x ) ];
-        typename list<HashedObj>::iterator itr = find( whichList.begin( ), whichList.end( ), x );
-	
-        if( itr == whichList.end( ) )
+        list<HashedObj> &whichList = theLists[myhash(x)];
+        typename list<HashedObj>::iterator itr = find(whichList.begin(), whichList.end(), x);
+
+        if (itr == whichList.end())
             return false;
 
-        whichList.erase( itr );
+        whichList.erase(itr);
         --currentSize;
         return true;
     }
 
-  private:
-    vector<list<HashedObj> > theLists;   // The array of Lists
-    int  currentSize;
+private:
+    vector<list<HashedObj>> theLists; // The array of Lists
+    int currentSize;
 
-    void rehash( )
+    void rehash()
     {
-        vector<list<HashedObj> > oldLists = theLists;
+        vector<list<HashedObj>> oldLists = theLists;
 
-            // Create new double-sized, empty table
-        theLists.resize( nextPrime( 2 * theLists.size( ) ) );
-        for( int j = 0; j < theLists.size( ); j++ )
-            theLists[ j ].clear( );
+        // Create new double-sized, empty table
+        theLists.resize(nextPrime(2 * theLists.size()));
+        for (int j = 0; j < theLists.size(); j++)
+            theLists[j].clear();
 
-            // Copy table over
+        // Copy table over
         currentSize = 0;
-        for( int i = 0; i < oldLists.size( ); i++ )
+        for (int i = 0; i < oldLists.size(); i++)
         {
-            typename list<HashedObj>::iterator itr = oldLists[ i ].begin( );
-            while( itr != oldLists[ i ].end( ) )
-                insert( *itr++ );
+            typename list<HashedObj>::iterator itr = oldLists[i].begin();
+            while (itr != oldLists[i].end())
+                insert(*itr++);
         }
     }
 
-    int myhash( const HashedObj & x ) const
+    int myhash(const HashedObj &x) const
     {
-        int hashVal = hash( x );
+        int hashVal = hash2(x);
 
-        hashVal %= theLists.size( );
-        if( hashVal < 0 )
-            hashVal += theLists.size( );
+        hashVal %= theLists.size();
+        if (hashVal < 0)
+            hashVal += theLists.size();
 
         return hashVal;
     }
-
-    
 };
-
 
 #endif
